@@ -1,12 +1,12 @@
 us-accident-prediction/
 │
-├── .gitignore                          # ไฟล์ระบุชื่อไฟล์ที่ไม่ต้องเอาขึ้น GitHub (เช่น ไฟล์ CSV ใหญ่ๆ)
-├── README.md                           # ไฟล์อธิบายโปรเจ็กต์ (ความสำคัญ, วิธีรันโค้ด, สรุปผล)
+├── .gitignore                          
+├── README.md                           
 ├── requirements.txt                    # ไฟล์ระบุ library ที่ใช้ (เช่น pandas, scikit-learn, seaborn)
 │
 ├── data/                               # โฟลเดอร์เก็บข้อมูล
 │   ├── raw/                            # เก็บไฟล์ CSV ต้นฉบับ (ห้ามแก้ไขไฟล์ในนี้)
-|   |   └── US_Accidents_March23.csv    # เก็บไฟล์ CSV ต้นฉบับ (ห้ามแก้ไขไฟล์ในนี้)
+|   |   └── US_Accidents_March23.csv    # ไฟล์ CSV ต้นฉบับ (ห้ามแก้ไขไฟล์ในนี้)
 │   |
 |   └── processed/                      # เก็บไฟล์ที่ Clean แล้ว พร้อมสำหรับทำโมเดล
 │
@@ -17,8 +17,8 @@ us-accident-prediction/
 │   ├── 04_model_training.ipynb
 │   └── 05_model_evaluation.ipynb
 │
-├── src/                                # (Optional) สำหรับเก็บโค้ด Python (.py) ที่ใช้ซ้ำๆ
+├── src/                                
 │   └── utils.py                        # ฟังก์ชันช่วยเหลือ เช่น การคำนวณระยะทาง หรือการจัดการวันเวลา
 │
 └── reports/                            # โฟลเดอร์เก็บผลลัพธ์สุดท้าย
-    └── figures/                        # กราฟสวยๆ ที่เซฟออกมาจาก Notebook เพื่อใช้ทำ Presentation
+    └── figures/                        
