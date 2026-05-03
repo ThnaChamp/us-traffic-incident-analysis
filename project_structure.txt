@@ -2,23 +2,51 @@ us-accident-prediction/
 │
 ├── .gitignore                          
 ├── README.md                           
-├── requirements.txt                    # ไฟล์ระบุ library ที่ใช้ (เช่น pandas, scikit-learn, seaborn)
+├── requirements.txt                                # ไฟล์ระบุ library ที่ใช้ (เช่น pandas, scikit-learn, seaborn)
 │
-├── data/                               # โฟลเดอร์เก็บข้อมูล
-│   ├── raw/                            # เก็บไฟล์ CSV ต้นฉบับ (ห้ามแก้ไขไฟล์ในนี้)
-|   |   └── US_Accidents_March23.csv    # ไฟล์ CSV ต้นฉบับ (ห้ามแก้ไขไฟล์ในนี้)
-│   |
-|   └── processed/                      # เก็บไฟล์ที่ Clean แล้ว พร้อมสำหรับทำโมเดล
-│
-├── notebooks/                          # โฟลเดอร์เก็บไฟล์ Jupyter Notebook แยกตามเลขลำดับ
-│   ├── 01_data_cleaning.ipynb
-│   ├── 02_eda_exploration.ipynb
+├── data/                                           # โฟลเดอร์เก็บข้อมูล
+│   ├── raw/                                        # เก็บไฟล์ CSV ต้นฉบับ (ห้ามแก้ไขไฟล์ในนี้)
+│   │   └── US_Accidents_March23.csv                # ไฟล์ CSV ต้นฉบับ (ห้ามแก้ไขไฟล์ในนี้)
+│   │
+│   └── processed/                                  # เก็บไฟล์ที่ Clean แล้ว พร้อมสำหรับทำโมเดล
+│       ├── 01.1/                                   # เก็บไฟล์ที่ผ่าน Basic Clean
+│       │   └── accidents_basic_clean.csv 
+│       │   
+│       ├── 01.2/                                   # เก็บไฟล์ที่ผ่าน Splitting
+│       │   ├── test_features_for_predict.csv       # ไฟล์ CSV สำหรับการทดสอบ prediction 
+│       │   ├── test_secret_answer.csv              # ไฟล์ CSV คำตอบ
+│       │   ├── train_data.csv                      # ไฟล์ CSV สำหรับการ train
+│       │  
+│       └── 01.3/                                   # เก็บไฟล์ที่ผ่าน Advance Clean
+│           └── accidents_advance_clean.csv         # ไฟล์ CSV ที่ผ่านการ Advance Clean
+│         
+├── notebooks/                                      # โฟลเดอร์เก็บไฟล์ Jupyter Notebook แยกตามเลขลำดับ
+│   ├── 01.1_data_cleaning.ipynb                    # Basic clean: clean แบบรวม เช่น drop null column
+│   ├── 01.2_data_splitting.ipynb                   # แบ่งข้อมูลเป็น 80:20 ไว้สำหรับการ train แล้วก็ prediction
+│   ├── 01.3_data_advance_cleaning.ipynb            # Advance clean: clean แบบแยก เช่น เติม mean
+│   ├── 02_eda_exploration.ipynb            
 │   ├── 03_feature_engineering.ipynb
 │   ├── 04_model_training.ipynb
-│   └── 05_model_evaluation.ipynb
+│   ├── 05_model_evaluation.ipynb
+│   │
+│   ├── eda/
+│   │   ├── 02_eda_visualization_champ.ipynb 
+│   │   ├── 02_eda_visualization_cop.ipynb 
+│   │   ├── 02_eda_visualization_deng.ipynb 
+│   │   ├── 02_eda_visualization_in.ipynb 
+│   │   ├── 02_eda_visualization_jeff.ipynb 
+│   │   └── 02_eda_visualization_soft.ipynb 
+│   │
+│   └── feature/
+│       ├── 03_feature_engineering_champ.ipynb 
+│       ├── 03_feature_engineering_cop.ipynb 
+│       ├── 03_feature_engineering_deng.ipynb 
+│       ├── 03_feature_engineering_in.ipynb 
+│       ├── 03_feature_engineering_jeff.ipynb 
+│       └── 03_feature_engineering_soft.ipynb 
 │
 ├── src/                                
-│   └── utils.py                        # ฟังก์ชันช่วยเหลือ เช่น การคำนวณระยะทาง หรือการจัดการวันเวลา
+│   └── utils.py                                    # ฟังก์ชันช่วยเหลือ เช่น การคำนวณระยะทาง หรือการจัดการวันเวลา
 │
-└── reports/                            # โฟลเดอร์เก็บผลลัพธ์สุดท้าย
+└── reports/                                        # โฟลเดอร์เก็บผลลัพธ์สุดท้าย
     └── figures/                        
