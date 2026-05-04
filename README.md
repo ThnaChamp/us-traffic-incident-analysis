@@ -11,11 +11,12 @@
 ---
 
 ## 👥 Team Members
-* [ชื่อ-นามสกุล]  
-* [ชื่อ-นามสกุล] 
-* [ชื่อ-นามสกุล] 
-* [ชื่อ-นามสกุล] 
-* [ชื่อ-นามสกุล] 
+* KITTITHAT  DISTHANAKORNKUN   67070501004
+* JETANIN    NAITHO            67070501011 
+* NAPHAT     UTABUAWONG        67070501015
+* THANATIP   NITINANTAKUL      67070501023
+* NANTAKORN  PINSUPAPORN       67070501028
+* KAWINPOP   CHURARI           67070501079
 
 ---
 
