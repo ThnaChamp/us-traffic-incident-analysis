@@ -11,12 +11,14 @@
 ---
 
 ## 👥 Team Members
-* KITTITHAT&emsp;DISTHANAKORNKUN&emsp;67070501004
-* JETANIN&emsp;NAITHO&emsp;67070501011 
-* NAPHAT&emsp;UTABUAWONG&emsp;67070501015
-* THANATIP&emsp;NITINANTAKUL&emsp;67070501023
-* NANTAKORN&emsp;PINSUPAPORN&emsp;67070501028
-* KAWINPOP&emsp;CHURARI&emsp;67070501079
+| # | Name | Student ID |
+|---|------|------------|
+| 1 | Kittithat Disthanakornkun | 67070501004 |
+| 2 | Jetanin Naitho            | 67070501011 |
+| 3 | Naphat Utabuawong         | 67070501015 |
+| 4 | Thanatip Nitinantakul     | 67070501023 |
+| 5 | Nantakorn Pinsupaporn     | 67070501028 |
+| 6 | Kawinpop Churari          | 67070501079 |
 
 ---
 
