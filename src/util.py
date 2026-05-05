@@ -51,3 +51,78 @@ def manage_outlier(df, outlier_columns):
             df_copy[col]
         )
     return df_copy
+
+def apply_weather_grouping(df):
+    df_copy = df.copy()
+    
+    # Define weather keyword groups based on frequent words
+    weather_keywords = {
+        'Severe': 'thunder|storm|tornado|gale|hail|squalls|funnel|whirl|volcanic',
+        'Snow_Ice': 'snow|sleet|ice|freez|wintry|mix|pellet',
+        'Fog': 'fog|haze|smoke|dust|mist|patches|sand|ash|shallow',
+        'Rain': 'rain|drizzle|shower|precip',
+        'Windy': 'wind|breezy|blustery|gusty',
+        'Cloudy': 'cloud|overcast',
+        'Clear': 'clear|fair'
+    }
+    
+    if 'Weather_Condition' in df_copy.columns:
+        weather_series = df_copy['Weather_Condition'].str.lower().fillna('')
+        
+        # Priority order: Severe > Snow_Ice > Fog > Rain > Windy > Cloudy > Clear
+        conditions = [
+            weather_series.str.contains(weather_keywords['Severe'], na=False),
+            weather_series.str.contains(weather_keywords['Snow_Ice'], na=False),
+            weather_series.str.contains(weather_keywords['Fog'], na=False),
+            weather_series.str.contains(weather_keywords['Rain'], na=False),
+            weather_series.str.contains(weather_keywords['Windy'], na=False),
+            weather_series.str.contains(weather_keywords['Cloudy'], na=False),
+            weather_series.str.contains(weather_keywords['Clear'], na=False)
+        ]
+        
+        choices = ['Severe', 'Snow_Ice', 'Fog', 'Rain', 'Windy', 'Cloudy', 'Clear']
+        df_copy['Weather_Group'] = np.select(conditions, choices, default='Other')
+    else:
+        if 'Weather_Group' not in df_copy.columns:
+            df_copy['Weather_Group'] = 'Other'
+
+    # Fallback logic for 'Other' or NaN using numeric columns
+    mask_other = df_copy["Weather_Group"].isin(["Other", np.nan])
+    
+    if mask_other.any():
+        # Ensure required columns exist for fallback
+        for col in ['Wind_Speed(mph)', 'Precipitation(in)', 'Temperature(F)', 'Visibility(mi)', 'Humidity(%)']:
+            if col not in df_copy.columns:
+                df_copy[col] = np.nan
+
+        conditions_from_numbers = [
+            (((df_copy['Wind_Speed(mph)'].notnull()) & (df_copy['Wind_Speed(mph)'] > 40)) | 
+             ((df_copy['Precipitation(in)'].notnull()) & (df_copy['Precipitation(in)'] > 1.0))),
+
+            (df_copy['Precipitation(in)'].notnull()) & (df_copy['Temperature(F)'].notnull()) & 
+            (df_copy['Precipitation(in)'] > 0) & (df_copy['Temperature(F)'] < 32),
+            
+            (df_copy['Precipitation(in)'].notnull()) & (df_copy['Temperature(F)'].notnull()) & 
+            (df_copy['Precipitation(in)'] > 0) & (df_copy['Temperature(F)'] >= 32),
+            
+            (df_copy['Visibility(mi)'].notnull()) & 
+            (df_copy['Visibility(mi)'] < 2.0),
+            
+            (df_copy['Wind_Speed(mph)'].notnull()) & 
+            (df_copy['Wind_Speed(mph)'] > 20),
+            
+            (df_copy['Humidity(%)'].notnull()) & 
+            (df_copy['Humidity(%)'] > 80),
+            
+            (df_copy['Temperature(F)'].notnull())
+        ]
+
+        choices_for_numbers = ["Severe", "Snow_Ice", "Rain", "Fog", "Windy", "Cloudy", "Clear"]
+        
+        df_copy.loc[mask_other, "Weather_Group"] = np.select(
+            [cond[mask_other] for cond in conditions_from_numbers],
+            choices_for_numbers,
+            default="Other",
+        )
+        
+    return df_copy
