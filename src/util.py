@@ -126,3 +126,81 @@ def apply_weather_grouping(df):
         )
         
     return df_copy
+
+def feature_engineering_pipeline(df):
+
+    # 2. Temporal Features
+    if 'Start_Time' in df.columns:
+        df['Start_Time'] = pd.to_datetime(df['Start_Time'])
+        df['Hour'] = df['Start_Time'].dt.hour
+        df['Month'] = df['Start_Time'].dt.month
+        df['DayOfWeek'] = df['Start_Time'].dt.dayofweek
+        
+        # Binary flags
+        df['Is_Rush_Hour'] = df['Hour'].isin([7, 8, 9, 16, 17, 18]).astype(int)
+        df['Is_Weekend'] = (df['DayOfWeek'] >= 5).astype(int)
+        
+        # Cyclical encoding
+        df['Hour_sin'] = np.sin(2 * np.pi * df['Hour'] / 24)
+        df['Hour_cos'] = np.cos(2 * np.pi * df['Hour'] / 24)
+        df['Month_sin'] = np.sin(2 * np.pi * df['Month'] / 12)
+        df['Month_cos'] = np.cos(2 * np.pi * df['Month'] / 12)
+
+    if 'Sunrise_Sunset' in df.columns:
+        df['Is_Night'] = (df['Sunrise_Sunset'] == 'Night').astype(int)
+
+    # 3. Weather Features
+    bad_weather_groups = ['Rain', 'Fog', 'Snow_Ice', 'Severe']
+    if 'Weather_Group' in df.columns:
+        df['Is_Bad_Weather'] = df['Weather_Group'].isin(bad_weather_groups).astype(int)
+    
+    if 'Visibility(mi)' in df.columns:
+        df['Low_Visibility_Flag'] = (df['Visibility(mi)'] < 2).astype(int)
+    
+    if 'Temperature(F)' in df.columns:
+        df['Freezing_Flag'] = (df['Temperature(F)'] < 32).astype(int)
+        
+    weather_risk_cols = ['Is_Bad_Weather', 'Low_Visibility_Flag', 'Freezing_Flag']
+    df['Weather_Risk_Score'] = df[[c for c in weather_risk_cols if c in df.columns]].sum(axis=1)
+
+    # 4. Infrastructure Features
+    infra_cols = ['Amenity', 'Bump', 'Crossing', 'Give_Way', 'Junction', 
+                  'No_Exit', 'Railway', 'Roundabout', 'Station', 'Stop', 
+                  'Traffic_Calming', 'Traffic_Signal']
+    existing_infra = [c for c in infra_cols if c in df.columns]
+    if existing_infra:
+        df['Road_Complexity'] = df[existing_infra].astype(int).sum(axis=1)
+    
+    if 'Crossing' in df.columns and 'Junction' in df.columns:
+        df['Is_Intersection'] = (df['Crossing'].astype(int) | df['Junction'].astype(int)).astype(int)
+    
+    if 'Traffic_Signal' in df.columns and 'Stop' in df.columns:
+        df['Is_Controlled'] = (df['Traffic_Signal'].astype(int) | df['Stop'].astype(int)).astype(int)
+
+    # 5. Spatial Features (Frequency Encoding)
+    if 'State' in df.columns:
+        state_freq = df['State'].value_counts(normalize=True)
+        df['State_Freq'] = df['State'].map(state_freq)
+    
+    if 'City' in df.columns:
+        city_freq = df['City'].value_counts(normalize=True)
+        df['City_Freq'] = df['City'].map(city_freq)
+
+    # 6. Description Keywords (Insight from EDA)
+    if 'Description' in df.columns:
+        desc = df['Description'].str.lower()
+        df['is_shoulder'] = desc.str.contains('shoulder', na=False).astype(int)
+        df['is_blocked'] = desc.str.contains('blocked', na=False).astype(int)
+        df['is_overturned'] = desc.str.contains('overturned', na=False).astype(int)
+
+    # 7. Interaction Terms
+    if 'Severity' in df.columns:
+        df['Rush_x_Severity'] = df['Is_Rush_Hour'] * df['Severity']
+        df['Night_x_Severity'] = df.get('Is_Night', 0) * df['Severity']
+        
+        
+    cols_to_drop = ['Wind_Chill(F)']
+
+    df = df.drop(columns=[c for c in cols_to_drop if c in df.columns], errors='ignore')
+
+    return df
