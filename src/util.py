@@ -43,7 +43,7 @@ def manage_outlier(df, outlier_columns):
     df_copy = df.copy()
     
     for col in outlier_columns:
-        upper_limit_duration = df_copy[col].quantile(0.999)
+        upper_limit_duration = df_copy[col].quantile(0.99)
 
         df_copy[col] = np.where(
             df_copy[col] > upper_limit_duration,
@@ -197,10 +197,5 @@ def feature_engineering_pipeline(df):
     if 'Severity' in df.columns:
         df['Rush_x_Severity'] = df['Is_Rush_Hour'] * df['Severity']
         df['Night_x_Severity'] = df.get('Is_Night', 0) * df['Severity']
-        
-        
-    cols_to_drop = ['Wind_Chill(F)']
-
-    df = df.drop(columns=[c for c in cols_to_drop if c in df.columns], errors='ignore')
 
     return df
